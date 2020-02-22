@@ -15,6 +15,9 @@ object GameLogic {
     private var delta = (0.0f, 0.0f, 0.0f)
 
     def init(): Unit = {
+        println("Loading...")
+        Renderer.init()
+        
         println("Welcome to the Game!")
         println("Press R to increase the Red color, and Ctrl+R to decrease it")
         println("Press G to increase the Green color, and Ctrl+G to decrease it")
