@@ -5,14 +5,11 @@ import org.lwjgl.opengl.GL11.GL_VENDOR
 import org.lwjgl.opengl.GL11.GL_RENDERER
 import org.lwjgl.opengl.GL11.GL_EXTENSIONS
 import org.lwjgl.opengl.GL11.GL_MAX_TEXTURE_SIZE
-import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
-import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
 
 import org.lwjgl.opengl.GL
 
 import org.lwjgl.opengl.GL11.glGetString
 import org.lwjgl.opengl.GL11.glGetInteger
-import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.glfw.GLFW.glfwSwapBuffers
 import org.lwjgl.glfw.GLFW.glfwPollEvents
@@ -21,11 +18,13 @@ object MainLoop {
     def init(): Unit = {
         GL.createCapabilities()
         printDiagnostics()
+        GameLogic.init()
     }
 
     def run(): Unit = Window.window.foreach { window =>
         while(!glfwWindowShouldClose(window)) {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+            GameLogic.update()
+            Renderer.render()
             glfwSwapBuffers(window)
             glfwPollEvents()
         }

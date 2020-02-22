@@ -61,6 +61,8 @@ object Window {
                 override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int): Unit = {
                     if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                         glfwSetWindowShouldClose(window, true)
+                    } else {
+                        GameLogic.input(key, action, mods)
                     }
                 }
             }
@@ -71,6 +73,10 @@ object Window {
         val vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor())
         glfwSetWindowPos(handle, (vidmode.width() - Settings.width) / 2, (vidmode.height() - Settings.height) / 2)
 
+        sys.addShutdownHook {
+            windowHandle.foreach { handle => glfwSetWindowShouldClose(handle, true) }
+        }
+
         glfwMakeContextCurrent(handle)
         glfwSwapInterval(1)
         glfwShowWindow(handle)
@@ -79,12 +85,15 @@ object Window {
     def cleanup(): Unit = {
         windowHandle.foreach { handle =>
             glfwDestroyWindow(handle)
+            windowHandle = None
         }
         keyCallback.foreach { callback =>
             callback.close()
+            keyCallback = None
         }
         errorCallback.foreach { callback => 
             callback.close()
+            errorCallback = None
         }
         glfwTerminate
     }
