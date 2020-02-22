@@ -11,6 +11,7 @@ object Entrypoint extends App {
     } catch {
         case e: Throwable => e.printStackTrace()
     } finally {
+        MainLoop.cleanup()
         Window.cleanup()
     }
     println("Bye")

@@ -18,6 +18,7 @@ object MainLoop {
     def init(): Unit = {
         GL.createCapabilities()
         printDiagnostics()
+        Renderer.init()
         GameLogic.init()
     }
 
@@ -28,6 +29,10 @@ object MainLoop {
             glfwSwapBuffers(window)
             glfwPollEvents()
         }
+    }
+
+    def cleanup(): Unit = {
+        Renderer.cleanup()
     }
 
     private def printDiagnostics(): Unit = {
