@@ -2,14 +2,14 @@ package org.sample
 
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
-import org.lwjgl.opengl.GL11.GL_FLOAT
+import org.lwjgl.opengl.GL11.GL_UNSIGNED_INT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
 import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
 
 import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.opengl.GL11.glClearColor
-import org.lwjgl.opengl.GL11.glDrawArrays
+import org.lwjgl.opengl.GL11.glDrawElements
 import org.lwjgl.opengl.GL11.glViewport
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
@@ -35,22 +35,15 @@ object Renderer {
         this.shaderProgram = Some(shaderProgram)
 
         val vertices = Array(
-            // House
-            0.5f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-
-            0.5f, 0.5f, 0.0f,
             -0.5f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
-
-            // Roof
-            0.0f, 0.8f, 0.0f,
-            -0.7f, 0.5f, 0.0f,
-            0.7f, 0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f
         )
 
-        mesh = Some(new Mesh(vertices))
+        val indices = Array(0,2,1,1,2,3)
+
+        mesh = Some(new Mesh(vertices, indices))
         mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices"))
 
         glViewport(0, 0, Settings.width, Settings.height)
@@ -74,7 +67,7 @@ object Renderer {
     private def renderMesh(mesh: Mesh): Unit = {
         glBindVertexArray(mesh.vaoId)
         glEnableVertexAttribArray(0)
-        glDrawArrays(GL_TRIANGLES, 0, mesh.vertexCount)
+        glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0)
         glDisableVertexAttribArray(0)
         glBindVertexArray(0)
     }
