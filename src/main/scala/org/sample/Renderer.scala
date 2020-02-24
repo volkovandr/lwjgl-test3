@@ -35,16 +35,23 @@ object Renderer {
         this.shaderProgram = Some(shaderProgram)
 
         val vertices = Array(
+            // House
             0.5f, 0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
 
             0.5f, 0.5f, 0.0f,
             -0.5f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f
+            -0.5f, -0.5f, 0.0f,
+
+            // Roof
+            0.0f, 0.8f, 0.0f,
+            -0.7f, 0.5f, 0.0f,
+            0.7f, 0.5f, 0.0f,
         )
 
         mesh = Some(new Mesh(vertices))
+        mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices"))
 
         glViewport(0, 0, Settings.width, Settings.height)
     }
