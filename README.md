@@ -19,3 +19,11 @@ The way how that could be done is as follows:
 1. Then navigate to `build\install\lwjgl-test3\bin`
 1. Then right-click `lwjgl-test.bat` and select "Create shortcut"
 1. And now right click the shortcut and select "Run with graphics processor..." and select the one you want.
+
+## Links
+
+This was made based on the following tutorials and code samples:
+
+https://examples.javacodegeeks.com/core-java/lwjgl-tutorial/
+
+https://www.gitbook.com/book/lwjglgamedev/3d-game-development-with-lwjgl
