@@ -1,8 +1,9 @@
 #version 330
 
-out vec4 fragColor;
+in vec3 exColour;
+out vec4 FragColor;
 
 void main()
 {
-    fragColor = vec4(0.0, 0.5, 0.5, 1.0);
+	FragColor = vec4(exColour, 1.0);
 }

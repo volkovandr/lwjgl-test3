@@ -42,6 +42,6 @@ object MainLoop {
         println(s"OpenGL vendor: ${glGetString(GL_VENDOR)}")
         println(s"OpenGL renderer: ${glGetString(GL_RENDERER)}")
         println("OpenGL extensions:")
-        glGetString(GL_EXTENSIONS).split("\\ ").foreach(ext => println(s"  $ext"))
+        Option(glGetString(GL_EXTENSIONS)).foreach(_.split("\\ ").foreach(ext => println(s"  $ext")))
     }
 }

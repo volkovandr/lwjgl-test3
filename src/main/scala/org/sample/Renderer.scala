@@ -36,27 +36,40 @@ object Renderer {
 
         val vertices = Array(
             -0.5f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f/*,
             0.0f, 0.7f, 0.0f,
             
             0.45f, 0.65f, 0.0f,
             0.40f, 0.65f, 0.0f,
             0.40f, 0.5f,  0.0f,
-            0.45f, 0.5f,  0.0f
+            0.45f, 0.5f,  0.0f*/
+        )
+
+        val colors = Array(
+            0.5f, 0.5f, 0.0f,
+            0.5f, 0.0f, 0.5f,
+            0.0f, 0.5f, 0.5f,
+            0.5f, 0.0f, 0.0f/*,
+            0.0f, 0.5f, 0.0f,
+            
+            0.0f, 0.0f, 0.5f,
+            0.0f, 0.0f, 0.5f,
+            0.0f, 0.0f, 0.5f,
+            0.0f, 0.0f, 0.5f */
         )
 
         val indices = Array(
-            0, 2, 1,
-            1, 2, 3,
+            0, 1, 3,
+            3, 1, 2/*,
             4, 0, 1,
             5, 6, 7,
-            5, 7, 8
+            5, 7, 8*/
         )
 
-        mesh = Some(new Mesh(vertices, indices))
-        mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices"))
+        mesh = Some(new Mesh(vertices, indices, colors))
+        mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices, VAOid = ${m.vaoId}"))
 
         glViewport(0, 0, Settings.width, Settings.height)
     }
@@ -79,7 +92,9 @@ object Renderer {
     private def renderMesh(mesh: Mesh): Unit = {
         glBindVertexArray(mesh.vaoId)
         glEnableVertexAttribArray(0)
+        glEnableVertexAttribArray(1)
         glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0)
+        glDisableVertexAttribArray(1)
         glDisableVertexAttribArray(0)
         glBindVertexArray(0)
     }

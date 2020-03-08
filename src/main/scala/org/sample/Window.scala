@@ -6,6 +6,11 @@ import org.lwjgl.glfw.GLFW.GLFW_RESIZABLE
 import org.lwjgl.glfw.GLFW.GLFW_VISIBLE
 import org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE
 import org.lwjgl.glfw.GLFW.GLFW_RELEASE
+import org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR
+import org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR
+import org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE
+import org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE
+import org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT
 import org.lwjgl.system.MemoryUtil.NULL
 
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -27,6 +32,7 @@ import org.lwjgl.glfw.GLFW.glfwSetWindowPos
 import org.lwjgl.glfw.GLFW.glfwMakeContextCurrent
 import org.lwjgl.glfw.GLFW.glfwSwapInterval
 import org.lwjgl.glfw.GLFW.glfwShowWindow
+import org.lwjgl.opengl.GL
 
 object Window {
     private var errorCallback: Option[GLFWErrorCallback] = None
@@ -49,6 +55,10 @@ object Window {
         glfwDefaultWindowHints()
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
         val handle = glfwCreateWindow(Settings.width, Settings.width, Settings.windowTitle, NULL, NULL)
         if(handle == NULL) {
@@ -79,6 +89,7 @@ object Window {
 
         glfwMakeContextCurrent(handle)
         glfwSwapInterval(1)
+        GL.createCapabilities()
         glfwShowWindow(handle)
     }
     
