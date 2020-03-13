@@ -34,7 +34,7 @@ class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
 
     init(positions, indices, colors)
     
-    private def init(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
+    private def init(positions: Array[Float], indices: Array[Int], colors: Array[Float]): Unit = {
         var posBuffer: FloatBuffer = null
         var colorBuffer: FloatBuffer = null
         var indicesBuffer: IntBuffer = null
