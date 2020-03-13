@@ -29,6 +29,7 @@ object Renderer {
     def init(): Unit = {
         println("Loading...")
         val shaderProgram = new ShaderProgram()
+        shaderProgram.init()
         shaderProgram.createVertexShaderFromResourceFile("vertex.vs")
         shaderProgram.createFragmentShaderFromResourceFile("fragment.fs")
         shaderProgram.link()
@@ -38,34 +39,34 @@ object Renderer {
             -0.5f, 0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f/*,
+            0.5f, 0.5f, 0.0f,
             0.0f, 0.7f, 0.0f,
             
             0.45f, 0.65f, 0.0f,
             0.40f, 0.65f, 0.0f,
             0.40f, 0.5f,  0.0f,
-            0.45f, 0.5f,  0.0f*/
+            0.45f, 0.5f,  0.0f
         )
 
         val colors = Array(
             0.5f, 0.5f, 0.0f,
             0.5f, 0.0f, 0.5f,
             0.0f, 0.5f, 0.5f,
-            0.5f, 0.0f, 0.0f/*,
+            0.5f, 0.0f, 0.0f,
             0.0f, 0.5f, 0.0f,
             
             0.0f, 0.0f, 0.5f,
             0.0f, 0.0f, 0.5f,
             0.0f, 0.0f, 0.5f,
-            0.0f, 0.0f, 0.5f */
+            0.0f, 0.0f, 0.5f
         )
 
         val indices = Array(
             0, 1, 3,
-            3, 1, 2/*,
+            3, 1, 2,
             4, 0, 1,
             5, 6, 7,
-            5, 7, 8*/
+            5, 7, 8
         )
 
         mesh = Some(new Mesh(vertices, indices, colors))

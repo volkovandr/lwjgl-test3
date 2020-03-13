@@ -89,8 +89,8 @@ object Window {
 
         glfwMakeContextCurrent(handle)
         glfwSwapInterval(1)
-        GL.createCapabilities()
         glfwShowWindow(handle)
+        // GL.createCapabilities()
     }
     
     def cleanup(): Unit = {
