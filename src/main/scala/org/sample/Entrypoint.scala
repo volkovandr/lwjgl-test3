@@ -1,5 +1,8 @@
 package org.sample
 
+import org.sample.interface.Window
+import org.sample.logic.MainLoop
+
 object Entrypoint extends App {
     println("This is a LWJGL sample program")
     try {

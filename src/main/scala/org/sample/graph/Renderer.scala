@@ -1,4 +1,9 @@
-package org.sample
+package org.sample.graph
+
+import org.sample.helpers.Settings
+import org.sample.interface.Window
+import org.sample.logic.GameLogic
+import org.sample.helpers.CustomTypes._
 
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
@@ -21,8 +26,8 @@ import org.joml.Matrix4f
 object Renderer {
 
     private var shaderProgram: Option[ShaderProgram] = None
-    private var vao: Option[CustomTypes.VaoId] = None
-    private var vbo: Option[CustomTypes.VboId] = None
+    private var vao: Option[VaoId] = None
+    private var vbo: Option[VboId] = None
     private var mesh: Option[Mesh] = None
     private val projectionMatrixUniformName = "projectionMatrix"
     private var projectionMatrix: Matrix4f = _

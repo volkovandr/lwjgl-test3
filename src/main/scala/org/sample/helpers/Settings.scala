@@ -1,4 +1,4 @@
-package org.sample
+package org.sample.helpers
 
 object Settings {
     var width: Int = 300

@@ -1,4 +1,6 @@
-package org.sample
+package org.sample.graph
+
+import org.sample.helpers.CustomTypes._
 
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
@@ -30,9 +32,9 @@ import scala.util.Using
 
 class ShaderProgram {
     
-    private var program: Option[CustomTypes.ShaderProgramId] = None
-    private var vertexShaderId: Option[CustomTypes.VertexShaderId] = None
-    private var fragmentShaderId: Option[CustomTypes.FragmentShaderId] = None
+    private var program: Option[ShaderProgramId] = None
+    private var vertexShaderId: Option[VertexShaderId] = None
+    private var fragmentShaderId: Option[FragmentShaderId] = None
     private var uniforms: Map[String, Int] = Map()
     
     def init(): Unit = {

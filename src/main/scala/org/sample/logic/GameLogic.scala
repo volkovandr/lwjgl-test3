@@ -1,4 +1,6 @@
-package org.sample
+package org.sample.logic
+
+import org.sample.helpers.Settings
 
 import org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE
 import org.lwjgl.glfw.GLFW.GLFW_REPEAT

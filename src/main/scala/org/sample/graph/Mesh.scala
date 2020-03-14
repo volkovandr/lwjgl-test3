@@ -1,4 +1,6 @@
-package org.sample
+package org.sample.graph
+
+import org.sample.helpers.CustomTypes._
 
 import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
 import org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER
@@ -21,16 +23,16 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
-    private var vao: Option[CustomTypes.VaoId] = None
-    private var posVbo: Option[CustomTypes.VboId] = None
-    private var idxVbo: Option[CustomTypes.VboId] = None
-    private var colVbo: Option[CustomTypes.VboId] = None
+    private var vao: Option[VaoId] = None
+    private var posVbo: Option[VboId] = None
+    private var idxVbo: Option[VboId] = None
+    private var colVbo: Option[VboId] = None
     var vertexCount: Int = 0
 
-    def vaoId: CustomTypes.VaoId = vao.getOrElse(0)
-    def posVboId: CustomTypes.VboId = posVbo.getOrElse(0)
-    def idxVboId: CustomTypes.VboId = idxVbo.getOrElse(0)
-    def colVboId: CustomTypes.VboId = colVbo.getOrElse(0)
+    def vaoId: VaoId = vao.getOrElse(0)
+    def posVboId: VboId = posVbo.getOrElse(0)
+    def idxVboId: VboId = idxVbo.getOrElse(0)
+    def colVboId: VboId = colVbo.getOrElse(0)
 
     init(positions, indices, colors)
     

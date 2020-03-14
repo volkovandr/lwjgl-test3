@@ -1,4 +1,7 @@
-package org.sample
+package org.sample.logic
+
+import org.sample.graph.Renderer
+import org.sample.interface.Window
 
 import org.lwjgl.opengl.GL11.GL_VERSION
 import org.lwjgl.opengl.GL11.GL_VENDOR

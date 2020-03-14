@@ -1,4 +1,8 @@
-package org.sample
+package org.sample.interface
+
+import org.sample.helpers.Settings
+import org.sample.logic.GameLogic
+import org.sample.helpers.CustomTypes._
 
 import org.lwjgl.glfw.GLFW.GLFW_TRUE
 import org.lwjgl.glfw.GLFW.GLFW_FALSE
@@ -39,10 +43,10 @@ import org.lwjgl.opengl.GL
 object Window {
     private var errorCallback: Option[GLFWErrorCallback] = None
     private var keyCallback: Option[GLFWKeyCallback] = None
-    private var windowHandle: Option[CustomTypes.WindowHandle] = None
+    private var windowHandle: Option[WindowHandle] = None
     private var resized: Boolean = true
 
-    def window: Option[CustomTypes.WindowHandle] = windowHandle
+    def window: Option[WindowHandle] = windowHandle
 
     def init(): Unit = {
         glfwSetErrorCallback {
