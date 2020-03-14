@@ -16,12 +16,14 @@ import org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE
 import org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE
 import org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT
 import org.lwjgl.system.MemoryUtil.NULL
+import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
 
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWKeyCallback
 import org.lwjgl.glfw.GLFWVidMode
 
 import org.lwjgl.opengl.GL11.glViewport
+import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.glfw.GLFW.glfwSetErrorCallback
 import org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback
 import org.lwjgl.glfw.GLFW.glfwInit
@@ -103,6 +105,8 @@ object Window {
         glfwMakeContextCurrent(handle)
         glfwSwapInterval(1)
         glfwShowWindow(handle)
+        GL.createCapabilities()
+        glEnable(GL_DEPTH_TEST)
     }
 
     def resizeWindow(): Boolean =  if(resized) {
