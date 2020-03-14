@@ -27,6 +27,7 @@ object Transformation {
             .rotateY(Math.toRadians(rotation.y).toFloat)
             .rotateZ(Math.toRadians(rotation.z).toFloat)
             .scale(scale)
-        worldMatrix
+
+            worldMatrix
     }
 }

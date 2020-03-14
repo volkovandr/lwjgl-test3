@@ -76,8 +76,6 @@ class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
 
             vertexCount = indices.size
             vao = Some(vaoId)
-
-            println(s"Mesh: colors: ${colors.mkString("[", ",", "]")}")
         } catch {
             case e: Throwable => println(s"Failed creating Mesh: ${e.getMessage}")
             throw e

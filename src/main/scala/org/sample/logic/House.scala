@@ -4,16 +4,16 @@ import org.sample.graph.Mesh
 
 class House extends GameObject {
     private val vertices = Array(
-        -0.5f, 0.5f,  -1.5f,
-        -0.5f, -0.5f, -1.5f,
-        0.5f, -0.5f,  -1.5f,
-        0.5f, 0.5f,   -1.5f,
-        0.0f, 0.7f,   -1.5f,
+        -0.5f, 0.5f,  0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f,  0.0f,
+        0.5f, 0.5f,   0.0f,
+        0.0f, 0.7f,   0.0f,
         
-        0.45f, 0.65f, -1.5f,
-        0.40f, 0.65f, -1.5f,
-        0.40f, 0.5f,  -1.5f,
-        0.45f, 0.5f,  -1.5f
+        0.45f, 0.65f, 0.0f,
+        0.40f, 0.65f, 0.0f,
+        0.40f, 0.5f,  0.0f,
+        0.45f, 0.5f,  0.0f
     )
 
     private val colors = Array(
@@ -40,5 +40,6 @@ class House extends GameObject {
     override def init(): Unit = {
          val mesh = new Mesh(vertices, indices, colors)
          super.init(mesh)
+         moveBy(0, 0, -1.5f)
     }
 }
