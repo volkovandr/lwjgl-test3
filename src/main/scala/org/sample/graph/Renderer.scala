@@ -28,9 +28,12 @@ import org.sample.logic.House
 object Renderer {
 
     private var shaderProgram: Option[ShaderProgram] = None
-    private var objects: List[GameObject] = List()
     private val projectionMatrixUniformName = "projectionMatrix"
-    private var projectionMatrix: Matrix4f = _
+    private val worldMatrixUniformName = "worldMatrix"
+    private val fieldOfView = Math.toRadians(60.0f).toFloat
+    private val zNear = 0.01f
+    private val zFar = 1000.0f
+    private var projectionMatrix = new Matrix4f()
 
     def init(): Unit = {
         println("Loading...")
@@ -41,19 +44,15 @@ object Renderer {
         shaderProgram.createFragmentShaderFromResourceFile("fragment.fs")
         shaderProgram.link()
         shaderProgram.createUniform(projectionMatrixUniformName)
+        shaderProgram.createUniform(worldMatrixUniformName)
         this.shaderProgram = Some(shaderProgram)
 
-        objects = List(new House)
-        objects.foreach(_.init())
+        GameLogic.gameObjects.foreach(_.init())
     }
 
     def render(): Unit = {
         if(Window.resizeWindow()) {
-            val fieldOfView = Math.toRadians(60.0f).toFloat
-            val zNear = 0.01f
-            val zFar = 1000.0f
-            val aspectRatio = Settings.width.toFloat / Settings.height
-            projectionMatrix = new Matrix4f().perspective(fieldOfView, aspectRatio, zNear, zFar)
+            projectionMatrix = Transformation.projectionMatrix(fieldOfView, zNear, zFar)
         }
         
         import GameLogic.color
@@ -65,7 +64,11 @@ object Renderer {
         } {
             program.bind()
             program.setUniform(projectionMatrixUniformName, projectionMatrix)
-            objects.foreach(o => renderMesh(o.mesh))
+            GameLogic.gameObjects.foreach(o => {
+                val worldMatrix = Transformation.worldMatrix(o.position, o.rotation, o.scale)
+                program.setUniform(worldMatrixUniformName, worldMatrix)
+                renderMesh(o.mesh)
+            })
             program.unbind()
         }
     }
@@ -82,6 +85,6 @@ object Renderer {
 
     def cleanup(): Unit = {
         shaderProgram.foreach(sp => sp.cleanup())
-        objects.foreach(_.cleanup())
+        GameLogic.gameObjects.foreach(_.cleanup())
     }
 }

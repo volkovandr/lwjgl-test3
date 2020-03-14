@@ -8,11 +8,26 @@ import org.lwjgl.glfw.GLFW.GLFW_PRESS
 import org.lwjgl.glfw.GLFW.GLFW_KEY_R
 import org.lwjgl.glfw.GLFW.GLFW_KEY_G
 import org.lwjgl.glfw.GLFW.GLFW_KEY_B
+import org.lwjgl.glfw.GLFW.GLFW_KEY_UP
+import org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN
+import org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT
+import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT
+import org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE
+import org.lwjgl.glfw.GLFW.GLFW_KEY_KP_ADD
+import org.lwjgl.glfw.GLFW.GLFW_KEY_KP_SUBTRACT
+import org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE
+import org.lwjgl.glfw.GLFW.GLFW_KEY_Q
+import org.lwjgl.glfw.GLFW.GLFW_KEY_E
+import org.lwjgl.glfw.GLFW.GLFW_KEY_W
+import org.lwjgl.glfw.GLFW.GLFW_KEY_S
+import org.lwjgl.glfw.GLFW.GLFW_KEY_A
+import org.lwjgl.glfw.GLFW.GLFW_KEY_D
 
 object GameLogic {
 
     private val step= 0.01f
-
+    private val house = new House
+    val gameObjects: List[GameObject] = List(house)
     var color = (0.0f, 0.0f, 0.0f)
     private var delta = (0.0f, 0.0f, 0.0f)
 
@@ -21,10 +36,27 @@ object GameLogic {
         println("Press R to increase the Red color, and Ctrl+R to decrease it")
         println("Press G to increase the Green color, and Ctrl+G to decrease it")
         println("Press B to increase the Blue color, and Ctrl+B to decrease it")
+        println("Use cursor keys to move the house, numpad's + and - to move it farther or closer,")
+        println("Q and E to rotate it and SPACE to bring everything back.")
     }
 
-    def input(key: Int, action: Int, mods: Int): Unit = {
-        delta = if((action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    def input(key: Int, action: Int, mods: Int): Unit =  key match {
+        case GLFW_KEY_UP =>   house.moveBy(0, 0.01f, 0)
+        case GLFW_KEY_DOWN => house.moveBy(0, -0.01f, 0)
+        case GLFW_KEY_RIGHT => house.moveBy(0.01f, 0, 0)
+        case GLFW_KEY_LEFT =>  house.moveBy(-0.01f, 0, 0)
+        case GLFW_KEY_KP_ADD =>      house.moveBy(0.0f, 0, 0.01f)
+        case GLFW_KEY_KP_SUBTRACT => house.moveBy(0.0f, 0, -0.01f)
+        case GLFW_KEY_Q => house.rotateBy(0, 0, 1.0f)
+        case GLFW_KEY_E => house.rotateBy(0, 0, -1.0f)
+        case GLFW_KEY_W => house.rotateBy(1.0f, 0, 0)
+        case GLFW_KEY_S => house.rotateBy(-1.0f, 0, 0)
+        case GLFW_KEY_A => house.rotateBy(0, 1.0f, 0)
+        case GLFW_KEY_D => house.rotateBy(0, -1.0f, 0)
+        case GLFW_KEY_SPACE => 
+            house.moveTo(0, 0, 0)
+            house.rotateTo(0, 0, 0)
+        case _ => delta = if((action == GLFW_PRESS || action == GLFW_REPEAT)) {
             key match {
                 case GLFW_KEY_R if (mods & Settings.CTRL_BIT) == 0 => (step, 0.0f, 0.0f)
                 case GLFW_KEY_R =>                                    (-step, 0.0f, 0.0f)
@@ -36,7 +68,7 @@ object GameLogic {
             }
         } else (0.0f, 0.0f, 0.0f)
     }
-
+    
     def update(): Unit = {
         color = (
             withinBounds(color._1, delta._1),
