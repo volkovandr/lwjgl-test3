@@ -22,13 +22,13 @@ import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
 import org.joml.Matrix4f
+import org.sample.logic.GameObject
+import org.sample.logic.House
 
 object Renderer {
 
     private var shaderProgram: Option[ShaderProgram] = None
-    private var vao: Option[VaoId] = None
-    private var vbo: Option[VboId] = None
-    private var mesh: Option[Mesh] = None
+    private var objects: List[GameObject] = List()
     private val projectionMatrixUniformName = "projectionMatrix"
     private var projectionMatrix: Matrix4f = _
 
@@ -43,42 +43,8 @@ object Renderer {
         shaderProgram.createUniform(projectionMatrixUniformName)
         this.shaderProgram = Some(shaderProgram)
 
-        val vertices = Array(
-            -0.5f, 0.5f,  -1.5f,
-            -0.5f, -0.5f, -1.5f,
-            0.5f, -0.5f,  -1.5f,
-            0.5f, 0.5f,   -1.5f,
-            0.0f, 0.7f,   -1.5f,
-            
-            0.45f, 0.65f, -1.5f,
-            0.40f, 0.65f, -1.5f,
-            0.40f, 0.5f,  -1.5f,
-            0.45f, 0.5f,  -1.5f
-        )
-
-        val colors = Array(
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-            
-            0.0f, 0.0f, 0.5f,
-            0.0f, 0.0f, 0.5f,
-            0.0f, 0.0f, 0.5f,
-            0.0f, 0.0f, 0.5f
-        )
-
-        val indices = Array(
-            0, 1, 3,
-            3, 1, 2,
-            4, 0, 3,
-            5, 6, 7,
-            5, 7, 8
-        )
-
-        mesh = Some(new Mesh(vertices, indices, colors))
-        mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices, VAOid = ${m.vaoId}"))
+        objects = List(new House)
+        objects.foreach(_.init())
     }
 
     def render(): Unit = {
@@ -96,11 +62,10 @@ object Renderer {
 
         for {
             program <- shaderProgram
-            mesh <- mesh
         } {
             program.bind()
             program.setUniform(projectionMatrixUniformName, projectionMatrix)
-            renderMesh(mesh)
+            objects.foreach(o => renderMesh(o.mesh))
             program.unbind()
         }
     }
@@ -117,6 +82,6 @@ object Renderer {
 
     def cleanup(): Unit = {
         shaderProgram.foreach(sp => sp.cleanup())
-        mesh.foreach(m => m.cleanup())
+        objects.foreach(_.cleanup())
     }
 }
