@@ -40,6 +40,5 @@ class House extends GameObject {
     override def init(): Unit = {
          val mesh = new Mesh(vertices, indices, colors)
          super.init(mesh)
-         moveBy(0, 0, -1.5f)
     }
 }

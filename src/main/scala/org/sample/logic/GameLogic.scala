@@ -32,12 +32,13 @@ object GameLogic {
     private var delta = (0.0f, 0.0f, 0.0f)
 
     def init(): Unit = {
+        house.moveTo(0, 0, -1.5f)
         println("Welcome to the Game!")
         println("Press R to increase the Red color, and Ctrl+R to decrease it")
         println("Press G to increase the Green color, and Ctrl+G to decrease it")
         println("Press B to increase the Blue color, and Ctrl+B to decrease it")
         println("Use cursor keys to move the house, numpad's + and - to move it farther or closer,")
-        println("Q and E to rotate it and SPACE to bring everything back.")
+        println("Q and E, W and S, A and D to rotate it and SPACE to bring everything back.")
     }
 
     def input(key: Int, action: Int, mods: Int): Unit =  key match {
@@ -54,7 +55,7 @@ object GameLogic {
         case GLFW_KEY_A => house.rotateBy(0, 1.0f, 0)
         case GLFW_KEY_D => house.rotateBy(0, -1.0f, 0)
         case GLFW_KEY_SPACE => 
-            house.moveTo(0, 0, 0)
+            house.moveTo(0, 0, -1.5f)
             house.rotateTo(0, 0, 0)
         case _ => delta = if((action == GLFW_PRESS || action == GLFW_REPEAT)) {
             key match {
