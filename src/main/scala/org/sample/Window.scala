@@ -17,7 +17,9 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWKeyCallback
 import org.lwjgl.glfw.GLFWVidMode
 
+import org.lwjgl.opengl.GL11.glViewport
 import org.lwjgl.glfw.GLFW.glfwSetErrorCallback
+import org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback
 import org.lwjgl.glfw.GLFW.glfwInit
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.glfw.GLFW.glfwDefaultWindowHints
@@ -38,6 +40,7 @@ object Window {
     private var errorCallback: Option[GLFWErrorCallback] = None
     private var keyCallback: Option[GLFWKeyCallback] = None
     private var windowHandle: Option[CustomTypes.WindowHandle] = None
+    private var resized: Boolean = true
 
     def window: Option[CustomTypes.WindowHandle] = windowHandle
 
@@ -54,7 +57,7 @@ object Window {
 
         glfwDefaultWindowHints()
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE)
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -80,6 +83,12 @@ object Window {
             callback
         })
 
+        glfwSetFramebufferSizeCallback(handle, (window, width, height) => {
+            resized = true
+            Settings.height = height
+            Settings.width = width
+        })
+
         val vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor())
         glfwSetWindowPos(handle, (vidmode.width() - Settings.width) / 2, (vidmode.height() - Settings.height) / 2)
 
@@ -90,7 +99,11 @@ object Window {
         glfwMakeContextCurrent(handle)
         glfwSwapInterval(1)
         glfwShowWindow(handle)
-        // GL.createCapabilities()
+    }
+
+    def resizeWindow(): Unit = if(resized) {
+        glViewport(0, 0, Settings.width, Settings.height)
+        resized = false
     }
     
     def cleanup(): Unit = {

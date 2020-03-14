@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
 import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.opengl.GL11.glClearColor
 import org.lwjgl.opengl.GL11.glDrawElements
-import org.lwjgl.opengl.GL11.glViewport
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 import org.lwjgl.opengl.GL30.glBindVertexArray
@@ -71,11 +70,10 @@ object Renderer {
 
         mesh = Some(new Mesh(vertices, indices, colors))
         mesh.foreach(m => println(s"Loaded mesh. ${m.vertexCount} vertices, VAOid = ${m.vaoId}"))
-
-        glViewport(0, 0, Settings.width, Settings.height)
     }
 
     def render(): Unit = {
+        Window.resizeWindow()
         import GameLogic.color
         glClearColor(color._1, color._2, color._3, 0.0f)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
