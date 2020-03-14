@@ -101,9 +101,12 @@ object Window {
         glfwShowWindow(handle)
     }
 
-    def resizeWindow(): Unit = if(resized) {
+    def resizeWindow(): Boolean =  if(resized) {
         glViewport(0, 0, Settings.width, Settings.height)
         resized = false
+        true
+    } else {
+        false
     }
     
     def cleanup(): Unit = {

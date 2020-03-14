@@ -20,14 +20,20 @@ import org.lwjgl.opengl.GL20.glGetProgramInfoLog
 import org.lwjgl.opengl.GL20.glValidateProgram
 import org.lwjgl.opengl.GL20.glUseProgram
 import org.lwjgl.opengl.GL20.glDeleteProgram
+import org.lwjgl.opengl.GL20.glGetUniformLocation
+import org.lwjgl.opengl.GL20.glUniformMatrix4fv
 
 import scala.io.Source
+import org.joml.Matrix4f
+import org.lwjgl.system.MemoryStack
+import scala.util.Using
 
 class ShaderProgram {
     
     private var program: Option[CustomTypes.ShaderProgramId] = None
     private var vertexShaderId: Option[CustomTypes.VertexShaderId] = None
     private var fragmentShaderId: Option[CustomTypes.FragmentShaderId] = None
+    private var uniforms: Map[String, Int] = Map()
     
     def init(): Unit = {
         val programId = glCreateProgram()
@@ -59,6 +65,22 @@ class ShaderProgram {
 
         shaderId
     }
+
+    def createUniform(uniformName: String): Unit = program.foreach(programId => {
+        val uniformLocation = glGetUniformLocation(programId, uniformName)
+        if(uniformLocation < 0) {
+            throw new RuntimeException(s"Cannot find uniform named [$uniformName]")
+        }
+        uniforms += uniformName -> uniformLocation
+    })
+
+    def setUniform(uniformName: String, matrix: Matrix4f): Unit = uniforms
+        .get(uniformName)
+        .foreach(uniform => Using(MemoryStack.stackPush()) { stack =>
+            val fb = stack.mallocFloat(16)
+            matrix.get(fb)
+            glUniformMatrix4fv(uniform, false, fb)
+        })
 
     def link(): Unit = program.foreach { programId =>
         glLinkProgram(programId)

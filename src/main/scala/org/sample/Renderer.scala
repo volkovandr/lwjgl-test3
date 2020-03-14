@@ -16,35 +16,39 @@ import org.lwjgl.opengl.GL30.glBindVertexArray
 
 import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
+import org.joml.Matrix4f
 
 object Renderer {
 
     private var shaderProgram: Option[ShaderProgram] = None
     private var vao: Option[CustomTypes.VaoId] = None
     private var vbo: Option[CustomTypes.VboId] = None
-
     private var mesh: Option[Mesh] = None
+    private val projectionMatrixUniformName = "projectionMatrix"
+    private var projectionMatrix: Matrix4f = _
 
     def init(): Unit = {
         println("Loading...")
+
         val shaderProgram = new ShaderProgram()
         shaderProgram.init()
         shaderProgram.createVertexShaderFromResourceFile("vertex.vs")
         shaderProgram.createFragmentShaderFromResourceFile("fragment.fs")
         shaderProgram.link()
+        shaderProgram.createUniform(projectionMatrixUniformName)
         this.shaderProgram = Some(shaderProgram)
 
         val vertices = Array(
-            -0.5f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            0.0f, 0.7f, 0.0f,
+            -0.5f, 0.5f,  -1.5f,
+            -0.5f, -0.5f, -1.5f,
+            0.5f, -0.5f,  -1.5f,
+            0.5f, 0.5f,   -1.5f,
+            0.0f, 0.7f,   -1.5f,
             
-            0.45f, 0.65f, 0.0f,
-            0.40f, 0.65f, 0.0f,
-            0.40f, 0.5f,  0.0f,
-            0.45f, 0.5f,  0.0f
+            0.45f, 0.65f, -1.5f,
+            0.40f, 0.65f, -1.5f,
+            0.40f, 0.5f,  -1.5f,
+            0.45f, 0.5f,  -1.5f
         )
 
         val colors = Array(
@@ -73,7 +77,14 @@ object Renderer {
     }
 
     def render(): Unit = {
-        Window.resizeWindow()
+        if(Window.resizeWindow()) {
+            val fieldOfView = Math.toRadians(60.0f).toFloat
+            val zNear = 0.01f
+            val zFar = 1000.0f
+            val aspectRatio = Settings.width.toFloat / Settings.height
+            projectionMatrix = new Matrix4f().perspective(fieldOfView, aspectRatio, zNear, zFar)
+        }
+        
         import GameLogic.color
         glClearColor(color._1, color._2, color._3, 0.0f)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -83,6 +94,7 @@ object Renderer {
             mesh <- mesh
         } {
             program.bind()
+            program.setUniform(projectionMatrixUniformName, projectionMatrix)
             renderMesh(mesh)
             program.unbind()
         }

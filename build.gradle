@@ -36,6 +36,8 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+	implementation group: 'org.joml', name: 'joml', version: '1.9.22'
 }
 
 application {
