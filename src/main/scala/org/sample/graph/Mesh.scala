@@ -22,23 +22,23 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
+class Mesh(positions: Array[Float], indices: Array[Int], texCoords: Array[Float], val texture: Texture) {
     private var vao: Option[VaoId] = None
     private var posVbo: Option[VboId] = None
     private var idxVbo: Option[VboId] = None
-    private var colVbo: Option[VboId] = None
+    private var texVbo: Option[VboId] = None
     var vertexCount: Int = 0
 
     def vaoId: VaoId = vao.getOrElse(0)
     def posVboId: VboId = posVbo.getOrElse(0)
     def idxVboId: VboId = idxVbo.getOrElse(0)
-    def colVboId: VboId = colVbo.getOrElse(0)
+    def texVboId: VboId = texVbo.getOrElse(0)
 
-    init(positions, indices, colors)
+    init(positions, indices, texCoords)
     
-    private def init(positions: Array[Float], indices: Array[Int], colors: Array[Float]): Unit = {
+    private def init(positions: Array[Float], indices: Array[Int], texCoords: Array[Float]): Unit = {
         var posBuffer: FloatBuffer = null
-        var colorBuffer: FloatBuffer = null
+        var texCoordBuffer: FloatBuffer = null
         var indicesBuffer: IntBuffer = null
         try {
             val vaoId = glGenVertexArrays()
@@ -54,15 +54,14 @@ class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0)
             posVbo = Some(posVboId)
 
-            val colVboId = glGenBuffers()
-            colorBuffer = MemoryUtil.memAllocFloat(colors.size)
-            colorBuffer.put(colors).flip()
-            glBindBuffer(GL_ARRAY_BUFFER, colVboId)
-            glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW)
+            val texVboId = glGenBuffers()
+            texCoordBuffer = MemoryUtil.memAllocFloat(texCoords.size)
+            texCoordBuffer.put(texCoords).flip()
+            glBindBuffer(GL_ARRAY_BUFFER, texVboId)
+            glBufferData(GL_ARRAY_BUFFER, texCoordBuffer, GL_STATIC_DRAW)
             glEnableVertexAttribArray(1)
-            glBindBuffer(GL_ARRAY_BUFFER, colVboId)
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0)
-            colVbo = Some(colVboId)
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0)
+            texVbo = Some(texVboId)
 
             val idxVboId = glGenBuffers()
             indicesBuffer = MemoryUtil.memAllocInt(indices.size)
@@ -83,8 +82,8 @@ class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
             if(indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer)
             }
-            if(colorBuffer != null) {
-                MemoryUtil.memFree(colorBuffer)
+            if(texCoordBuffer != null) {
+                MemoryUtil.memFree(texCoordBuffer)
             }
             if(posBuffer != null) {
                 MemoryUtil.memFree(posBuffer)
@@ -98,8 +97,9 @@ class Mesh(positions: Array[Float], indices: Array[Int], colors: Array[Float]) {
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         posVbo.foreach(id => glDeleteBuffers(id))
         idxVbo.foreach(id => glDeleteBuffers(id))
-        colVbo.foreach(id => glDeleteBuffers(id))
+        texVbo.foreach(id => glDeleteBuffers(id))
         glBindVertexArray(0)
         vao.foreach(id => glDeleteVertexArrays(id))
+        texture.cleanup()
     }
 }

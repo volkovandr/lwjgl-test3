@@ -1,6 +1,7 @@
 package org.sample.logic
 
 import org.sample.graph.Mesh
+import org.sample.graph.Texture
 
 class House extends GameObject {
     private val vertices = Array(
@@ -19,19 +20,19 @@ class House extends GameObject {
         0.0f, 0.8f,   -0.5f
     )
 
-    private val colors = Array(
-        1.0f, 0.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
+    private val texCoords = Array(
+        0.5f, 0.5f, 
+        0.5f, 1.0f, 
+        1.0f, 1.0f, 
+        1.0f, 0.5f, 
 
-        0.8f, 0.0f, 8.0f,
-        0.0f, 0.8f, 8.0f,
-        0.0f, 0.8f, 8.0f,
-        0.8f, 0.0f, 8.0f,
+        0.8f, 0.0f, 
+        0.0f, 0.8f, 
+        0.0f, 0.8f, 
+        0.8f, 0.0f, 
 
-        0.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 0.8f
+        0.0f, 1.0f, 
+        1.0f, 0.0f, 
     )
 
     private val indices = Array(
@@ -63,7 +64,7 @@ class House extends GameObject {
     )   
         
     override def init(): Unit = {
-         val mesh = new Mesh(vertices, indices, colors)
+         val mesh = new Mesh(vertices, indices, texCoords, new Texture("/house.png"))
          super.init(mesh)
     }
 }

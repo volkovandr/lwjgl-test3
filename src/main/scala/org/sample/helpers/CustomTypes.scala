@@ -7,4 +7,5 @@ object CustomTypes {
     type FragmentShaderId = Int
     type VaoId = Int
     type VboId = Int
+    type TextureId = Int
 }

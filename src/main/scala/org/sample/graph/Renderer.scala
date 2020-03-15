@@ -9,12 +9,16 @@ import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_UNSIGNED_INT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
+import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
+import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER
 import org.lwjgl.opengl.GL15.GL_STATIC_DRAW
 
 import org.lwjgl.opengl.GL11.glClear
 import org.lwjgl.opengl.GL11.glClearColor
 import org.lwjgl.opengl.GL11.glDrawElements
+import org.lwjgl.opengl.GL11.glBindTexture
+import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 import org.lwjgl.opengl.GL30.glBindVertexArray
@@ -30,6 +34,7 @@ object Renderer {
     private var shaderProgram: Option[ShaderProgram] = None
     private val projectionMatrixUniformName = "projectionMatrix"
     private val worldMatrixUniformName = "worldMatrix"
+    private val textureSampleUniformName = "texture_sampler"
     private val fieldOfView = Math.toRadians(60.0f).toFloat
     private val zNear = 0.01f
     private val zFar = 1000.0f
@@ -45,6 +50,7 @@ object Renderer {
         shaderProgram.link()
         shaderProgram.createUniform(projectionMatrixUniformName)
         shaderProgram.createUniform(worldMatrixUniformName)
+        shaderProgram.createUniform(textureSampleUniformName)
         this.shaderProgram = Some(shaderProgram)
 
         GameLogic.gameObjects.foreach(_.init())
@@ -67,6 +73,7 @@ object Renderer {
             GameLogic.gameObjects.foreach(o => {
                 val worldMatrix = Transformation.worldMatrix(o.position, o.rotation, o.scale)
                 program.setUniform(worldMatrixUniformName, worldMatrix)
+                program.setUniform(textureSampleUniformName, 0)
                 renderMesh(o.mesh)
             })
             program.unbind()
@@ -74,12 +81,14 @@ object Renderer {
     }
 
     private def renderMesh(mesh: Mesh): Unit = {
+        glActiveTexture(GL_TEXTURE0)
+        glBindTexture(GL_TEXTURE_2D, mesh.texture.textureId)
         glBindVertexArray(mesh.vaoId)
-        glEnableVertexAttribArray(0)
-        glEnableVertexAttribArray(1)
+        // glEnableVertexAttribArray(0)
+        // glEnableVertexAttribArray(1)
         glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0)
-        glDisableVertexAttribArray(1)
-        glDisableVertexAttribArray(0)
+        // glDisableVertexAttribArray(1)
+        // glDisableVertexAttribArray(0)
         glBindVertexArray(0)
     }
 

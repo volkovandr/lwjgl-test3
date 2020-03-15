@@ -24,6 +24,7 @@ import org.lwjgl.opengl.GL20.glUseProgram
 import org.lwjgl.opengl.GL20.glDeleteProgram
 import org.lwjgl.opengl.GL20.glGetUniformLocation
 import org.lwjgl.opengl.GL20.glUniformMatrix4fv
+import org.lwjgl.opengl.GL20.glUniform1i
 
 import scala.io.Source
 import org.joml.Matrix4f
@@ -83,6 +84,10 @@ class ShaderProgram {
             matrix.get(fb)
             glUniformMatrix4fv(uniform, false, fb)
         })
+
+    def setUniform(uniformName: String, value: Int): Unit = uniforms
+        .get(uniformName)
+        .foreach(uniformId => glUniform1i(uniformId, value))
 
     def link(): Unit = program.foreach { programId =>
         glLinkProgram(programId)
