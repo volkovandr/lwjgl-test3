@@ -39,6 +39,7 @@ object Renderer {
     private val zNear = 0.01f
     private val zFar = 1000.0f
     private var projectionMatrix = new Matrix4f()
+    private var camera: Option[Camera] = None
 
     def init(): Unit = {
         println("Loading...")
@@ -54,6 +55,8 @@ object Renderer {
         this.shaderProgram = Some(shaderProgram)
 
         GameLogic.gameObjects.foreach(_.init())
+
+        this.camera = Some(new Camera)
     }
 
     def render(): Unit = {
@@ -67,11 +70,14 @@ object Renderer {
 
         for {
             program <- shaderProgram
+            cam <- camera
         } {
             program.bind()
             program.setUniform(projectionMatrixUniformName, projectionMatrix)
+            val viewMatrix = Transformation.viewMatrix(cam)
+            
             GameLogic.gameObjects.foreach(o => {
-                val worldMatrix = Transformation.worldMatrix(o.position, o.rotation, o.scale)
+                val worldMatrix = Transformation.modelViewMatrix(o.position, o.rotation, o.scale, viewMatrix)
                 program.setUniform(worldMatrixUniformName, worldMatrix)
                 program.setUniform(textureSampleUniformName, 0)
                 renderMesh(o.mesh)
