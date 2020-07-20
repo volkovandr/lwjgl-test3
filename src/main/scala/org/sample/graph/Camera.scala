@@ -45,3 +45,7 @@ class Camera {
         _rotation.z += dz
     }
 }
+
+object Camera {
+    def apply(): Camera = new Camera()
+}

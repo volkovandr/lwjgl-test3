@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11.glGetInteger
 import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.glfw.GLFW.glfwSwapBuffers
 import org.lwjgl.glfw.GLFW.glfwPollEvents
+import org.sample.interface.MouseInput
 
 object MainLoop {
     def init(): Unit = {
@@ -27,6 +28,7 @@ object MainLoop {
 
     def run(): Unit = Window.window.foreach { window =>
         while(!glfwWindowShouldClose(window)) {
+            GameLogic.input()
             GameLogic.update()
             Renderer.render()
             glfwSwapBuffers(window)
