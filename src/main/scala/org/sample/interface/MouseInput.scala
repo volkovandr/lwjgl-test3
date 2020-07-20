@@ -25,7 +25,9 @@ object MouseInput {
                 currentPos.x = x
                 currentPos.y = y
             })
-            glfwSetCursorEnterCallback(window, (_, entered) => _inWindow = entered)
+            glfwSetCursorEnterCallback(window, (_, entered) => {
+                _inWindow = entered
+            })
             glfwSetMouseButtonCallback(window, (_, button, action, _) => {
                 _leftPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS
                 _rightPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS
@@ -50,8 +52,8 @@ object MouseInput {
             if(dy != 0) {
                 displacementVector.y = dy.toFloat
             }
-            previousPos.x = currentPos.x
-            previousPos.y = currentPos.y
         }
+        previousPos.x = currentPos.x
+        previousPos.y = currentPos.y
     }
 }
