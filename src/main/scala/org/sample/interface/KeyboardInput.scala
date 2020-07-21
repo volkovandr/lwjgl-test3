@@ -41,7 +41,8 @@ object KeyboardInput {
                 val callback = new GLFWKeyCallback() {
                     override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int): Unit = {
                         if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-                            glfwSetWindowShouldClose(window, true)
+                            if(MouseInput.locked) MouseInput.unlockMouse()
+                            else glfwSetWindowShouldClose(window, true)
                         } else {
                             keyInput(key, action, mods)
                         }
