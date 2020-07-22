@@ -4,7 +4,22 @@ import org.sample.graph.Mesh
 import org.sample.graph.Texture
 
 class House extends GameObject {
-    private val vertices = Array(
+
+    override def init(): Unit = {
+        House.init()
+        for(
+            tex <- House.texture
+        ) {
+            val mesh = new Mesh(House.vertices, House.indices, House.texCoords, tex)
+            super.init(mesh)
+        }
+    }
+}
+
+object House {
+    var texture: Option[Texture] = None
+    
+    val vertices = Array(
         //some of the vertices need to be duplicated otherwise the texture looks totally wrong
         //left-back
         -0.5f, 0.5f, -0.5f,   //0
@@ -38,7 +53,7 @@ class House extends GameObject {
         0.0f, 0.8f, -0.5f    //17
     )
 
-    private val texCoords = Array(
+    val texCoords = Array(
         // left-back
         0.0f, 0.5f, 
         0.0f, 0.75f, 
@@ -68,7 +83,7 @@ class House extends GameObject {
         0.0f, 0.5f - 0.120f
     )
 
-    private val indices = Array(
+    val indices = Array(
         //left side
         2, 0, 1,
         2, 1, 3,
@@ -94,9 +109,10 @@ class House extends GameObject {
         16, 17, 0,
         16, 0, 2
     )   
-        
-    override def init(): Unit = {
-         val mesh = new Mesh(vertices, indices, texCoords, new Texture("/house.png"))
-         super.init(mesh)
+
+    def init(): Unit = {
+        if(texture.isEmpty) {
+            texture = Some(new Texture("/house.png"))
+        }
     }
 }
