@@ -104,4 +104,8 @@ object GameLogic {
         case i if i > 1.0f => 1.0f
         case i => i
     }
+
+    def cleanup(): Unit = {
+        gameObjects.foreach(_.cleanup())
+    }
 }

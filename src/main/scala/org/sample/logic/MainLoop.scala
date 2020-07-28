@@ -38,6 +38,7 @@ object MainLoop {
 
     def cleanup(): Unit = {
         Renderer.cleanup()
+        GameLogic.cleanup()
     }
 
     private def printDiagnostics(): Unit = {

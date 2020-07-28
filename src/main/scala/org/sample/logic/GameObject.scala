@@ -25,5 +25,8 @@ class GameObject {
     def scaleTo(s: Float): Unit = _scale = s
     def scaleBy(s: Float): Unit = _scale *= s
 
-    def cleanup(): Unit = _mesh.foreach(_.cleanup())
+    def cleanup(): Unit = _mesh.foreach(m => {
+        m.cleanup()
+        _mesh = None
+    })
 }

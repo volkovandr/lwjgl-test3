@@ -72,5 +72,9 @@ class Texture {
         }
     }
 
-    def cleanup(): Unit = texture.foreach(id => glDeleteTextures(id))
+    def cleanup(): Unit = texture.foreach(id => {
+        println(s"Deleting texture [$id]")
+        glDeleteTextures(id)
+        texture = None
+    })
 }
