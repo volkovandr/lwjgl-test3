@@ -25,11 +25,13 @@ import org.lwjgl.opengl.GL20.glDeleteProgram
 import org.lwjgl.opengl.GL20.glGetUniformLocation
 import org.lwjgl.opengl.GL20.glUniformMatrix4fv
 import org.lwjgl.opengl.GL20.glUniform1i
+import org.lwjgl.opengl.GL20.glUniform3f
 
 import scala.io.Source
 import org.joml.Matrix4f
 import org.lwjgl.system.MemoryStack
 import scala.util.Using
+import org.joml.Vector3f
 
 class ShaderProgram {
     
@@ -88,6 +90,10 @@ class ShaderProgram {
     def setUniform(uniformName: String, value: Int): Unit = uniforms
         .get(uniformName)
         .foreach(uniformId => glUniform1i(uniformId, value))
+
+    def setUniform(uniformName: String, value: Vector3f): Unit = uniforms
+        .get(uniformName)
+        .foreach(uniformId => glUniform3f(uniformId, value.x, value.y, value.z))
 
     def link(): Unit = program.foreach { programId =>
         glLinkProgram(programId)

@@ -21,25 +21,39 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
+import org.joml.Vector3f
 
-class Mesh(positions: Array[Float], indices: Array[Int], texCoords: Array[Float], val texture: Texture) {
+class Mesh(positions: Array[Float], texCoords: Array[Float], normals: Array[Float], indices: Array[Int]) {
     private var vao: Option[VaoId] = None
     private var posVbo: Option[VboId] = None
     private var idxVbo: Option[VboId] = None
     private var texVbo: Option[VboId] = None
+    private var norVbo: Option[VboId] = None
     var vertexCount: Int = 0
 
     def vaoId: VaoId = vao.getOrElse(0)
     def posVboId: VboId = posVbo.getOrElse(0)
     def idxVboId: VboId = idxVbo.getOrElse(0)
     def texVboId: VboId = texVbo.getOrElse(0)
-
-    init(positions, indices, texCoords)
+    def norVboId: VboId = norVbo.getOrElse(0)
     
-    private def init(positions: Array[Float], indices: Array[Int], texCoords: Array[Float]): Unit = {
+    private var _texture: Option[Texture] = None
+    def texture: Texture = _texture.getOrElse(throw new RuntimeException("Texture not defined"))
+    def setTexture(tex: Texture): Unit = _texture = Some(tex)
+    def isTextured = _texture.nonEmpty
+
+    private var _color: Option[Vector3f] = None
+    def color = _color.getOrElse(throw new RuntimeException("Color not set"))
+    def setColor(col: Vector3f): Unit = _color = Some(col)
+    def isColored = _color.nonEmpty
+
+    init(positions, texCoords, normals, indices)
+    
+    private def init(positions: Array[Float], texCoords: Array[Float], normals: Array[Float], indices: Array[Int]): Unit = {
         var posBuffer: FloatBuffer = null
         var texCoordBuffer: FloatBuffer = null
         var indicesBuffer: IntBuffer = null
+        var normalsBuffer: FloatBuffer = null
         try {
             val vaoId = glGenVertexArrays()
             glBindVertexArray(vaoId)
@@ -70,6 +84,16 @@ class Mesh(positions: Array[Float], indices: Array[Int], texCoords: Array[Float]
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW)
             idxVbo = Some(idxVboId)
 
+            val norVboId = glGenBuffers()
+            normalsBuffer = MemoryUtil.memAllocFloat(normals.size)
+            normalsBuffer.put(normals).flip()
+            glBindBuffer(GL_ARRAY_BUFFER, norVboId)
+            glBufferData(GL_ARRAY_BUFFER, normalsBuffer, GL_STATIC_DRAW)
+            glEnableVertexAttribArray(2)
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0)
+            
+            norVbo = Some(norVboId)
+
             glBindBuffer(GL_ARRAY_BUFFER, 0)
             glBindVertexArray(0)
 
@@ -88,6 +112,9 @@ class Mesh(positions: Array[Float], indices: Array[Int], texCoords: Array[Float]
             if(posBuffer != null) {
                 MemoryUtil.memFree(posBuffer)
             }
+            if(normalsBuffer != null) {
+                MemoryUtil.memFree(normalsBuffer)
+            }
         }
     }
 
@@ -98,8 +125,9 @@ class Mesh(positions: Array[Float], indices: Array[Int], texCoords: Array[Float]
         posVbo.foreach(id => glDeleteBuffers(id))
         idxVbo.foreach(id => glDeleteBuffers(id))
         texVbo.foreach(id => glDeleteBuffers(id))
+        norVbo.foreach(id => glDeleteBuffers(id))
         glBindVertexArray(0)
         vao.foreach(id => glDeleteVertexArrays(id))
-        texture.cleanup()
+        _texture.foreach(_.cleanup())
     }
 }

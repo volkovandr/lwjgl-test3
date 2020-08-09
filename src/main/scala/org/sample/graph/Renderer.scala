@@ -31,10 +31,13 @@ import org.sample.logic.House
 
 object Renderer {
 
-    private var shaderProgram: Option[ShaderProgram] = None
     private val projectionMatrixUniformName = "projectionMatrix"
     private val worldMatrixUniformName = "worldMatrix"
     private val textureSampleUniformName = "texture_sampler"
+    private val colorUniformName = "color"
+    private val useColorUniformName = "useColor"
+
+    private var shaderProgram: Option[ShaderProgram] = None
     private val fieldOfView = Math.toRadians(60.0f).toFloat
     private val zNear = 0.01f
     private val zFar = 1000.0f
@@ -51,6 +54,8 @@ object Renderer {
         shaderProgram.createUniform(projectionMatrixUniformName)
         shaderProgram.createUniform(worldMatrixUniformName)
         shaderProgram.createUniform(textureSampleUniformName)
+        shaderProgram.createUniform(colorUniformName)
+        shaderProgram.createUniform(useColorUniformName)
         this.shaderProgram = Some(shaderProgram)
 
         GameLogic.gameObjects.foreach(_.init())
@@ -75,7 +80,13 @@ object Renderer {
             GameLogic.gameObjects.foreach(o => {
                 val worldMatrix = Transformation.modelViewMatrix(o.position, o.rotation, o.scale, viewMatrix)
                 program.setUniform(worldMatrixUniformName, worldMatrix)
-                program.setUniform(textureSampleUniformName, 0)
+                if(o.mesh.isTextured) {
+                    program.setUniform(textureSampleUniformName, 0)
+                    program.setUniform(useColorUniformName, 0)
+                } else {
+                    program.setUniform(useColorUniformName, 1)
+                    program.setUniform(colorUniformName, o.mesh.color)
+                }
                 renderMesh(o.mesh)
             })
             program.unbind()
@@ -86,12 +97,15 @@ object Renderer {
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, mesh.texture.textureId)
         glBindVertexArray(mesh.vaoId)
-        // glEnableVertexAttribArray(0)
-        // glEnableVertexAttribArray(1)
+        glEnableVertexAttribArray(0)
+        glEnableVertexAttribArray(1)
+        glEnableVertexAttribArray(2)
         glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0)
-        // glDisableVertexAttribArray(1)
-        // glDisableVertexAttribArray(0)
+        glDisableVertexAttribArray(0)
+        glDisableVertexAttribArray(1)
+        glDisableVertexAttribArray(2)
         glBindVertexArray(0)
+        glBindTexture(GL_TEXTURE_2D, 0)
     }
 
     def cleanup(): Unit = {
